@@ -8,7 +8,8 @@ export type BasicInfo = ProductmetaData &{
 
 export type ProductmetaData = {
 
-    stock?:number
+    stock?:number,
+    avilabilityMessage?:string;
 }
 
 export interface NodeComponentProps {
@@ -27,6 +28,7 @@ export type TreeNode = BasicInfo & ProductCategoryItem &{
 };
 export type FilterProps = {
   data: TreeNode[];
+  nodeView:React.ElementType<NodeComponentProps>
 };
 
 export type ProductCategoryItem = BasicInfo & {

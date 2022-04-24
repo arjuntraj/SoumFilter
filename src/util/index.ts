@@ -108,36 +108,41 @@ export const getFIlterDataFromProductMetadata = (
       currentCategory.stock = totalDeviceForCategory;
 
       //Get avilable Models for the current  brand under the current catogory
-
-      currentCategory.children.map(function (brand: ProductBrand) {
+      const brandsCount =  currentCategory.children.length;
+      currentCategory.children.map(function (brand: ProductBrand, index) {
         const modelsForCurrentBrand = productsForCurrentCategory.filter(
           product => product?.brand?.id == brand.id,
         );
 
         // const productsFOrCurrentBrand = productsForCurrentCategory.filter(p=>p?.brand?.id===bra)
 
+        //TODO : add login to round off the devcies by 10 OR 100 OR 1000 
         const totalDeviceForBrand = totalDeviceCount(modelsForCurrentBrand);
 
         const uniqModelsForCurrentBrand: ProductModel[] = getUniqObjectsByID(
           modelsForCurrentBrand.map(b => b.model),
         );
 
+        /* Avilability calculation for category */
+        //brand device list for each category
+        if (index === 0) {
+          currentCategory.avilabilityMessage= `${totalDeviceForBrand} ${brand.name}`;
+        } else {
+          let prefix = (brandsCount ==2 || brandsCount- 1 == index ) ? ' and' :' ,';
+          // TODO: Add logic to get plural values for each category
+          let suffix  = brandsCount == index +1 ? `${currentCategory.name}` :'';
+           currentCategory.avilabilityMessage += `${prefix} ${totalDeviceForBrand} ${brand.name} ${suffix}`;
+        }
+        
         //Models for each brand
         brand.children = uniqModelsForCurrentBrand;
         brand.type = 'brand';
         brand.stock = totalDeviceForBrand;
         brand.category = currentCategory.id;
-        //TODO CALCULATE AVILABILITY
-        // brand.avilableChildCountText = getDeviceAvilabilityMessage(
-        //   uniqModelsForCurrentBrand,
-        //   filtererdProductCategoryData,
-        //   currentCategory,
-        //   'model',
-        //   true,
-        // );
-
+       
+        const modelsCount =  brand.children.length;
         //getiing varients for eeah model
-        brand.children.forEach(function (model: ProductModel) {
+        brand.children.forEach(function (model: ProductModel,pos) {
           const modelsForCurrentModel = productsForCurrentCategory.filter(
             product =>
               product?.brand?.id == brand.id && product?.model?.id == model.id,
@@ -148,20 +153,27 @@ export const getFIlterDataFromProductMetadata = (
 
           const totalDeviceForModel = totalDeviceCount(modelsForCurrentModel);
 
+
+          /* Avilability calculation for brands  */
+
+
+          if (pos === 0) {
+            brand.avilabilityMessage= `${totalDeviceForModel} ${model.name}`;
+          } else {
+            let prefix = (modelsCount ==2 || modelsCount- 1 == index ) ? ' and' :' ,';
+            // TODO: Add logic to get plural values for each category
+            let suffix  = brandsCount == pos +1 ? `${currentCategory.name}` :'';
+            brand.avilabilityMessage += `${prefix} ${totalDeviceForModel} ${model.name} ${suffix}`;
+          }
+
           model.children = uniqVarientForCurrentModel;
           model.type = 'model';
           model.category = currentCategory.id;
           model.brand = brand.id;
           model.stock = totalDeviceForModel;
+          model.avilabilityMessage = totalDeviceForModel + ' Devices';
 
-          //setting model devcie count
-          //TODO
-          // model.avilableChildCountText = getDeviceAvilabilityMessage(
-          //   uniqVarientForCurrentBrand,
-          //   filtererdProductCategoryData,
-          //   currentCategory,
-          //   'varient',
-          // );
+          
 
           //Setting varient device count
 
@@ -177,6 +189,7 @@ export const getFIlterDataFromProductMetadata = (
               varientsForCurrentBrand.length + ' Device';
             varient.type = 'varient';
             varient.stock = totalDevice;
+            varient.avilabilityMessage = totalDevice + ' Devices';
             // (varient.brand = brand.id), (varient.category = currentCategory.id);
           });
         });
