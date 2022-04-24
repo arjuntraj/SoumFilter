@@ -10,11 +10,11 @@ const NodeComponent = ({
   toggleNodeSelection,
   selecteddNodes,
 }: NodeComponentProps) => {
-  
   const nodeId = getNodeID(node);
 
   const isSelected = selecteddNodes.includes(nodeId);
   const isSelectedNode = node?.selected;
+  const isExpandedNode = node?.expanded;
 
   return (
     <View style={{flex: 1, flexDirection: 'row'}}>
@@ -29,11 +29,22 @@ const NodeComponent = ({
         />
       </TouchableOpacity>
       <TouchableOpacity
+        style={{flex: 1}}
         onPress={() => {
           onToggleNodeView(node);
         }}>
-        <Text style={{flex: 1, marginTop: 7}}>{node?.name}</Text>
+        <Text style={{flex: 1, marginTop: 7}}>
+          {node?.name}
+          {node.children && (
+            <Icon
+              name={isExpandedNode ? 'minus' : 'plus'}
+              size={20}
+              color="#000"
+            />
+          )}
+        </Text>
       </TouchableOpacity>
+      <Text>{node?.stock}</Text>
     </View>
   );
 };
