@@ -1,7 +1,17 @@
-import {TreeNode} from '../types';
+import {
+  BasicInfo,
+  Product,
+  ProductBrand,
+  ProductCategoryItem,
+  ProductModel,
+  TreeNode,
+} from '../types';
 
-export const getUniqObjectsBy = (list: Array<{}>, uniqKey: string) => {
-  return [...new Map(list.map((item: any) => [item[uniqKey], item])).values()];
+export const getUniqObjectsByID = <T extends BasicInfo>(list: T[]): T[] => {
+  const filterrerdList = [
+    ...new Map(list.map((item: T) => [item.id, item])).values(),
+  ];
+  return filterrerdList;
 };
 
 export const getDeviceAvilabilityMessage = (
@@ -49,67 +59,67 @@ export const getDeviceAvilabilityMessage = (
 
   return message;
 };
-export const processProductForFilter = (
-  productCategoryData,
-  filtereredList,
-) => {
-  //Removing All category
+export const getFIlterDataFromProductMetadata = (
+  productCategoryData: ProductCategoryItem[],
+  productList: Product[],
+): ProductCategoryItem[] => {
+  //Removing 'All' category
+  //Specific to my mock data
   const filtererdProductCategoryData = productCategoryData.filter(
     a => a.name.trim() != 'All',
   );
-  //category
-  let categoryWithMetadata = filtererdProductCategoryData.map(
-    (currentCategory: any) => {
-      let productsForCategory: any[] = filtereredList.filter(
-        product => product.category?.id === currentCategory.id,
+
+  // find products for each category
+  const categoryWithMetadata = filtererdProductCategoryData.map(
+    (currentCategory: ProductCategoryItem) => {
+      //get products for current category
+      const productsForCurrentCategory: Product[] = productList.filter(
+        (product: Product) => product.category?.id === currentCategory.id,
       );
 
-      const brandsForSelectedCategory = productsForCategory.map(
-        (p: any) => p.brand,
+      // get avilable brands for the current category , from the 'productsForCurrentCategory'
+      const brandsForCurrentCategory = productsForCurrentCategory.map(
+        (p: Product) => p.brand,
       );
 
-      //setting avilable brands
-      const avilableUniqBrandsForCategory = getUniqObjectsBy(
-        brandsForSelectedCategory,
-        'id',
+      // setting uniq avilable brands
+      const avilableUniqBrandsForCategory: ProductBrand[] = getUniqObjectsByID(
+        brandsForCurrentCategory,
       );
 
-      currentCategory.children = avilableUniqBrandsForCategory;
+      //First child node for category is 'Brands'
+      currentCategory.children = avilableUniqBrandsForCategory || [];
       currentCategory.type = 'category';
 
-      //Get avilable Models for this brand and catogory
+      //Get avilable Models for the current  brand under the current catogory
 
-      currentCategory.children.map(function (brand: any) {
-        const modelsForCurrentBrand = productsForCategory.filter(
-          product => product.brand.id == brand.id,
+      currentCategory.children.map(function (brand: ProductBrand) {
+        const modelsForCurrentBrand = productsForCurrentCategory.filter(
+          product => product?.brand?.id == brand.id,
         );
 
-        const uniqModelsForCurrentBrand = getUniqObjectsBy(
+        const uniqModelsForCurrentBrand: ProductModel[] = getUniqObjectsByID(
           modelsForCurrentBrand.map(b => b.model),
-          'id',
         );
 
         //Models for each brand
         brand.children = uniqModelsForCurrentBrand;
         brand.type = 'brand';
         brand.category = currentCategory.id;
-
-        brand.avilableChildCountText = getDeviceAvilabilityMessage(
-          uniqModelsForCurrentBrand,
-          productsForCategory,
-          currentCategory,
-          'model',
-          true,
-        );
+        //TODO CALCULATE AVILABILITY
+        // brand.avilableChildCountText = getDeviceAvilabilityMessage(
+        //   uniqModelsForCurrentBrand,
+        //   filtererdProductCategoryData,
+        //   currentCategory,
+        //   'model',
+        //   true,
+        // );
 
         //getiing varients for eeah model
-        brand.children.forEach(function (model: any) {
-          const bransForCurrentBrand = productsForCategory.filter(
-            model => model.model.id == model.id,
-          );
-          const uniqVarientForCurrentBrand = getUniqObjectsBy(
+        brand.children.forEach(function (model: ProductModel) {
+         
+          const uniqVarientForCurrentBrand = getUniqObjectsByID(
             modelsForCurrentBrand.map(b => b.varient),
-            'id',
           );
 
           model.children = uniqVarientForCurrentBrand;
@@ -118,17 +128,18 @@ export const processProductForFilter = (
           model.brand = brand.id;
 
           //setting model devcie count
-          model.avilableChildCountText = getDeviceAvilabilityMessage(
-            uniqVarientForCurrentBrand,
-            productsForCategory,
-            currentCategory,
-            'varient',
-          );
+          //TODO
+          // model.avilableChildCountText = getDeviceAvilabilityMessage(
+          //   uniqVarientForCurrentBrand,
+          //   filtererdProductCategoryData,
+          //   currentCategory,
+          //   'varient',
+          // );
 
           //Setting varient device count
 
           model.children.forEach(function (varient: any) {
-            const varientsForCurrentBrand = productsForCategory.filter(
+            const varientsForCurrentBrand = productsForCurrentCategory.filter(
               produ => varient.id == produ.varient.id,
             );
 
@@ -143,7 +154,7 @@ export const processProductForFilter = (
       //Setting category device list
       currentCategory.avilableChildCountText = getDeviceAvilabilityMessage(
         avilableUniqBrandsForCategory,
-        productsForCategory,
+        filtererdProductCategoryData,
         currentCategory,
         'brand',
         true,
@@ -161,4 +172,8 @@ export const getNodeID = (node: TreeNode): string => {
   }`;
   const nodeId = node.id + node.name + parentNodeId;
   return nodeId;
+};
+
+export const updateItemSelection = <T>(list: T): T => {
+  return list;
 };
