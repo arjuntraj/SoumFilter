@@ -1,16 +1,20 @@
-import {cloneDeep} from 'lodash';
 import React, {useEffect, useState} from 'react';
 import {FlatList, View, Text, TouchableOpacity} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {FilterProps, NodeComponentProps, TreeNode} from '../types';
-import {getNodeID} from '../util';
- 
+import {getNodeID, updateItemSelection} from '../util';
+
 const NodeComponent = ({
   node,
   onToggleNodeView,
   toggleNodeSelection,
+  selecteddNodes,
 }: NodeComponentProps) => {
-  console.log('render tree node');
+  
+  const nodeId = getNodeID(node);
+
+  const isSelected = selecteddNodes.includes(nodeId);
+  const isSelectedNode = node?.selected;
 
   return (
     <View style={{flex: 1, flexDirection: 'row'}}>
@@ -19,7 +23,7 @@ const NodeComponent = ({
           toggleNodeSelection(node);
         }}>
         <Icon
-          name={node?.selected ? 'checkbox-outline' : 'checkbox-blank-outline'}
+          name={isSelectedNode ? 'checkbox-outline' : 'checkbox-blank-outline'}
           size={30}
           color="#000"
         />
@@ -46,11 +50,35 @@ function ProductFilter(props: FilterProps) {
     setFlatListKey(selecteddNodes.length * expandedNodes.length);
   }, [selecteddNodes, expandedNodes]);
 
-  const selectChildNode = (node: TreeNode, currentState: boolean) => {
+  const updateNodeSelectiopn = (node: TreeNode, currentState: boolean) => {
+    const nodeId = getNodeID(node);
     node.selected = !currentState;
+    if (currentState) {
+      ///removing current node from list
+      setSelecteddNodes(selecteddNodes.filter(id => id !== nodeId));
+    } else {
+      setSelecteddNodes([...selecteddNodes, nodeId]);
+    }
+  };
+  const toggleChildNode = (node: TreeNode, currentState: boolean) => {
+    // toggleing selction for child nodes
+
+    //Update local state
+    updateNodeSelectiopn(node, currentState);
     node?.children?.map((child: TreeNode) =>
-      selectChildNode(child, currentState),
+      toggleChildNode(child, currentState),
     );
+  };
+
+  const selectParentNode = (node?: TreeNode) => {
+    if (node) {
+      const nonSelectedChilds = node?.children?.filter(
+        (childNode: TreeNode) => !childNode.selected,
+      );
+      const isAnyNonSelectedChildNode = !nonSelectedChilds?.length;
+      updateNodeSelectiopn(node, !isAnyNonSelectedChildNode);
+      node.parentNode && selectParentNode(node.parentNode);
+    }
   };
 
   const shrinkChild = (node: TreeNode, currentState: boolean) => {
@@ -63,14 +91,14 @@ function ProductFilter(props: FilterProps) {
     const currentSelection = !!node.selected;
     //generate NodeId
     const nodeId = getNodeID(node);
-    if (selecteddNodes.includes(nodeId)) {
-      node.selected = false;
-      setSelecteddNodes(selecteddNodes.filter(id => id !== nodeId));
-    } else {
-      node.selected = true;
-      setSelecteddNodes([...selecteddNodes, nodeId]);
-    }
-    selectChildNode(node, currentSelection);
+
+    updateNodeSelectiopn(node, currentSelection);
+
+    // toggle all child nodes
+    toggleChildNode(node, currentSelection);
+    //SelectParentNode if all the child nodes are selected
+
+    selectParentNode(node?.parentNode);
   };
 
   const onToggleNodeView = (node: TreeNode) => {
@@ -108,6 +136,7 @@ function ProductFilter(props: FilterProps) {
       <View style={{paddingLeft: 20}} key={item.id}>
         <NodeComponent
           node={item}
+          selecteddNodes={selecteddNodes}
           toggleNodeSelection={toggleNodeSelection}
           onToggleNodeView={onToggleNodeView}
         />
