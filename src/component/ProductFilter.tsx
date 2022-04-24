@@ -92,9 +92,13 @@ function ProductFilter(props: FilterProps) {
     }
   };
 
-  const shrinkChild = (node: TreeNode, currentState: boolean) => {
-    node.expanded = !currentState;
-    node?.children?.map((child: TreeNode) => shrinkChild(child, currentState));
+  const shrinkChild = (node: TreeNode) => {
+    node.expanded = false;
+    const nodeId = getNodeID(node);
+
+    setExpandedNodes(expandedNodes.filter(item => item !== nodeId));
+
+    node?.children?.map((child: TreeNode) => shrinkChild(child));
   };
 
   const toggleNodeSelection = (node: TreeNode) => {
@@ -115,7 +119,7 @@ function ProductFilter(props: FilterProps) {
   const onToggleNodeView = (node: TreeNode) => {
     const nodeId: string = getNodeID(node);
     const isExpanded = node?.expanded;
-    if (expandedNodes.includes(nodeId)) {
+    if (isExpanded) {
       // console.log(nodeId + 'includes in ' + expandedNodes);
       node.expanded = false;
       setExpandedNodes(expandedNodes.filter(item => item !== nodeId));
@@ -123,9 +127,9 @@ function ProductFilter(props: FilterProps) {
       node.expanded = true;
       setExpandedNodes([...expandedNodes, nodeId]);
     }
-    if (isExpanded) {
-      // TODO
-      // shrinkChild(node, isExpanded);
+    if (!node.expanded) {
+      // 
+       shrinkChild(node);
     }
   };
   const renderChildNode = (node: TreeNode) => {
