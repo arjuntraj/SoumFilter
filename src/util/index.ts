@@ -3,6 +3,7 @@ import {
   Product,
   ProductBrand,
   ProductCategoryItem,
+  ProductmetaData,
   ProductModel,
   TreeNode,
 } from '../types';
@@ -12,6 +13,17 @@ export const getUniqObjectsByID = <T extends BasicInfo>(list: T[]): T[] => {
     ...new Map(list.map((item: T) => [item.id, item])).values(),
   ];
   return filterrerdList;
+};
+
+export const totalDeviceCount = <T extends ProductmetaData>(
+  list: T[],
+): number => {
+  const totalDevice = list.reduce((previousItem: number, currentItem: T) => {
+    const stock = currentItem?.stock || 0;
+    return previousItem + stock;
+  }, 0);
+
+  return totalDevice;
 };
 
 export const getDeviceAvilabilityMessage = (
@@ -62,7 +74,7 @@ export const getDeviceAvilabilityMessage = (
 export const getFIlterDataFromProductMetadata = (
   productCategoryData: ProductCategoryItem[],
   productList: Product[],
-): ProductCategoryItem[] => {
+): TreeNode[] => {
   //Removing 'All' category
   //Specific to my mock data
   const filtererdProductCategoryData = productCategoryData.filter(
@@ -86,10 +98,14 @@ export const getFIlterDataFromProductMetadata = (
       const avilableUniqBrandsForCategory: ProductBrand[] = getUniqObjectsByID(
         brandsForCurrentCategory,
       );
+      const totalDeviceForCategory = totalDeviceCount(
+        productsForCurrentCategory,
+      );
 
       //First child node for category is 'Brands'
       currentCategory.children = avilableUniqBrandsForCategory || [];
       currentCategory.type = 'category';
+      currentCategory.stock = totalDeviceForCategory;
 
       //Get avilable Models for the current  brand under the current catogory
 
@@ -98,6 +114,10 @@ export const getFIlterDataFromProductMetadata = (
           product => product?.brand?.id == brand.id,
         );
 
+        // const productsFOrCurrentBrand = productsForCurrentCategory.filter(p=>p?.brand?.id===bra)
+
+        const totalDeviceForBrand = totalDeviceCount(modelsForCurrentBrand);
+
         const uniqModelsForCurrentBrand: ProductModel[] = getUniqObjectsByID(
           modelsForCurrentBrand.map(b => b.model),
         );
@@ -105,6 +125,7 @@ export const getFIlterDataFromProductMetadata = (
         //Models for each brand
         brand.children = uniqModelsForCurrentBrand;
         brand.type = 'brand';
+        brand.stock = totalDeviceForBrand;
         brand.category = currentCategory.id;
         //TODO CALCULATE AVILABILITY
         // brand.avilableChildCountText = getDeviceAvilabilityMessage(
@@ -117,15 +138,21 @@ export const getFIlterDataFromProductMetadata = (
 
         //getiing varients for eeah model
         brand.children.forEach(function (model: ProductModel) {
-         
-          const uniqVarientForCurrentBrand = getUniqObjectsByID(
-            modelsForCurrentBrand.map(b => b.varient),
+          const modelsForCurrentModel = productsForCurrentCategory.filter(
+            product =>
+              product?.brand?.id == brand.id && product?.model?.id == model.id,
+          );
+          const uniqVarientForCurrentModel = getUniqObjectsByID(
+            modelsForCurrentModel.map(b => b.varient),
           );
 
-          model.children = uniqVarientForCurrentBrand;
+          const totalDeviceForModel = totalDeviceCount(modelsForCurrentModel);
+
+          model.children = uniqVarientForCurrentModel;
           model.type = 'model';
           model.category = currentCategory.id;
           model.brand = brand.id;
+          model.stock = totalDeviceForModel;
 
           //setting model devcie count
           //TODO
@@ -140,13 +167,17 @@ export const getFIlterDataFromProductMetadata = (
 
           model.children.forEach(function (varient: any) {
             const varientsForCurrentBrand = productsForCurrentCategory.filter(
-              produ => varient.id == produ.varient.id,
+              produ =>
+                varient.id == produ.varient.id &&
+                produ.model.id == model.id &&
+                produ.brand.id == brand.id,
             );
-
+            const totalDevice = totalDeviceCount(varientsForCurrentBrand);
             varient.avilableChildCountText =
               varientsForCurrentBrand.length + ' Device';
             varient.type = 'varient';
-            (varient.brand = brand.id), (varient.category = currentCategory.id);
+            varient.stock = totalDevice;
+            // (varient.brand = brand.id), (varient.category = currentCategory.id);
           });
         });
       });

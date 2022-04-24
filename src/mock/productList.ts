@@ -25,7 +25,7 @@ export const productList: Product[] = [
     model: productModel[4],
     image: require('../assets/img/product/awatch.png'),
     category: productCategory[2],
-    stock:100
+    stock:1000
   },
   {
     id: 3,
@@ -35,7 +35,7 @@ export const productList: Product[] = [
     model: productModel[12],
     image: require('../assets/img/product/iphone13.png'),
     category: productCategory[1],
-    stock:110
+    stock:1100
   },
   {
     id: 4,
@@ -45,7 +45,7 @@ export const productList: Product[] = [
     model: productModel[8],
     image: require('../assets/img/product/watch3.png'),
     category: productCategory[2],
-    stock:210
+    stock:2100
   },
   {
     id: 5,
@@ -55,17 +55,18 @@ export const productList: Product[] = [
     model: productModel[7],
     image: require('../assets/img/product/thinkbook.png'),
     category: productCategory[3],
-    stock:1096
+    stock:1000
   },
+  
   {
     id: 6,
-    name: 'Macbook',
-    brand: productBrand[0],
-    varient: productVarient[1],
-    model: productModel[5],
-    image: require('../assets/img/product/m1pro.png'),
+    name: 'ThinkBook',
+    brand: productBrand[4],
+    varient: productVarient[2],
+    model: productModel[7],
+    image: require('../assets/img/product/thinkbook.png'),
     category: productCategory[3],
-    stock:310
+    stock:900
   },
   {
     id: 7,
@@ -75,7 +76,7 @@ export const productList: Product[] = [
     model: productModel[9],
     image: require('../assets/img/product/sonyTv.png'),
     category: productCategory[5],
-    stock:10068
+    stock:10000
   },
   {
     id: 8,
@@ -109,42 +110,35 @@ export const productList: Product[] = [
   },
   {
     id: 11,
-    name: 'Macbook',
+    name: 'MacBook',
     brand: productBrand[0],
-    varient: productVarient[0],
+    varient: productVarient[10],
     model: productModel[5],
     image: require('../assets/img/product/m1pro.png'),
     category: productCategory[3],
-    stock:8810
+    stock:3000
   },
-  {
-    id: 14,
-    name: 'Macbook M1',
-    brand: productBrand[0],
-    varient: productVarient[0],
-    model: productModel[13],
-    image: require('../assets/img/product/m1pro.png'),
-    category: productCategory[3],
-    stock:5410
-  },
+   
   {
     id: 12,
-    name: 'Macbook',
+    name: 'MacBook',
     brand: productBrand[0],
-    varient: productVarient[1],
+    varient: productVarient[0],
     model: productModel[11],
     image: require('../assets/img/product/m1pro.png'),
     category: productCategory[3],
-    stock:410
+    stock:1000
   },
   {
     id: 13,
-    name: 'Macbook',
-    brand: productBrand[0],
-    varient: productVarient[1],
-    model: productModel[5],
-    image: require('../assets/img/product/m1pro.png'),
+    name: 'ThinkBook',
+    brand: productBrand[4],
+    varient: productVarient[0],
+    model: productModel[14],
+    image: require('../assets/img/product/thinkbook.png'),
     category: productCategory[3],
-    stock:1080
+    stock:6000
   },
+   
+  
 ];

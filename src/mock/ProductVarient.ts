@@ -41,6 +41,14 @@ export const productVarient: ProductVarient[] = [
     id: 10,
     name: '3rd gen',
   },
+  {
+    id: 11,
+    name: '5 TB',
+  },
+  {
+    id: 12,
+    name: '3 TB',
+  },
 
 
 

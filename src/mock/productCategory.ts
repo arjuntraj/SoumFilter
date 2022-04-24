@@ -1,4 +1,4 @@
-import { ProductCategoryItem } from "../constant/types";
+import { ProductCategoryItem } from "../types";
 
 export const productCategory: ProductCategoryItem[] = [
   {

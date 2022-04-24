@@ -1,4 +1,4 @@
-import {ProductModel} from '../constant/types';
+import {ProductModel} from '../types';
 
 export const productModel: ProductModel[] = [
   {
@@ -47,11 +47,19 @@ export const productModel: ProductModel[] = [
   },
   {
     id: 12,
-    name: 'Macbook Pro',
+    name: 'MacBook Pro',
   },
   {
     id: 13,
     name: 'v 30',
+  },
+  {
+    id: 14,
+    name: 'Macbook M1 Max',
+  },
+  {
+    id: 15,
+    name: 'IdeaPad',
   },
   
   

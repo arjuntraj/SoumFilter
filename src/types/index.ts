@@ -1,57 +1,58 @@
 import {ReactNode} from 'react';
 import {ImageRequireSource} from 'react-native';
 
-export type BasicInfo = {
+export type BasicInfo = ProductmetaData &{
   id: number;
-  name: string;
+  name: string; 
 };
 
+export type ProductmetaData = {
+
+    stock?:number
+}
+
 export interface NodeComponentProps {
-node:TreeNode,
-onToggleNodeView:Function,
-toggleNodeSelection:Function,
-selecteddNodes:Array<string>
+  node: TreeNode;
+  onToggleNodeView: Function;
+  toggleNodeSelection: Function;
+  selecteddNodes: Array<string>;
 }
 
-
-export type TreeNode = BasicInfo & {
-
-    children?:TreeNode[],
-    selected?:boolean,
-    expanded?:boolean,
-    parentNode?:TreeNode
-}
+export type TreeNode = BasicInfo & ProductCategoryItem &{
+  children?: TreeNode[];
+  selected?: boolean;
+  expanded?: boolean;
+  parentNode?: TreeNode;
+ 
+};
 export type FilterProps = {
+  data: TreeNode[];
+};
 
-    data:TreeNode[]
-
-}
-
-export type ProductCategoryItem =BasicInfo &  { 
-  image ?: ImageRequireSource;
+export type ProductCategoryItem = BasicInfo & {
+  image?: ImageRequireSource;
   avilableBrands?: ProductBrand[];
   availableVarients?: ProductVarient[];
   availbaleModels?: ProductModel[];
-  children?: CommonProductInfoObject[];
+  children?: ProductBrand[];
   type?: string;
   avilableChildCountText?: string;
-  category?: number;
+  category?: number; 
 };
-export type ProductBrand = BasicInfo & { 
-   type?: string;
+export type ProductBrand = BasicInfo & {
+  type?: string;
   category?: number;
   brand?: number;
-  children?:ProductModel[]
+  children?: ProductModel[];
 };
 export type ProductModel = BasicInfo & {
-   type?: string;
+  type?: string;
   category?: number;
   brand?: number;
-  children?:ProductVarient[]
-
+  children?: ProductVarient[];
 };
 export type ProductVarient = BasicInfo & {
-   category?: number;
+  category?: number;
   model?: number;
   brand?: number;
   type?: string;
@@ -62,5 +63,5 @@ export type Product = BasicInfo & {
   varient: ProductVarient;
   image: ImageRequireSource;
   category: ProductCategoryItem;
-  stock:number
+  stock: number;
 };
