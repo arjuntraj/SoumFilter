@@ -1,7 +1,7 @@
 import {ReactNode} from 'react';
 import {ImageRequireSource} from 'react-native';
 
-type BasicInfo = {
+export type BasicInfo = {
   id: number;
   name: string;
 };
@@ -10,6 +10,7 @@ export interface NodeComponentProps {
 node:TreeNode,
 onToggleNodeView:Function,
 toggleNodeSelection:Function,
+selecteddNodes:Array<string>
 }
 
 
@@ -40,11 +41,14 @@ export type ProductBrand = BasicInfo & {
    type?: string;
   category?: number;
   brand?: number;
+  children?:ProductModel[]
 };
 export type ProductModel = BasicInfo & {
    type?: string;
   category?: number;
   brand?: number;
+  children?:ProductVarient[]
+
 };
 export type ProductVarient = BasicInfo & {
    category?: number;
@@ -58,4 +62,5 @@ export type Product = BasicInfo & {
   varient: ProductVarient;
   image: ImageRequireSource;
   category: ProductCategoryItem;
+  stock:number
 };
