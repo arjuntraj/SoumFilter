@@ -50,8 +50,17 @@ Using mock data (src/mock) to render the product listing and filter.
 
   ### Props
 
-  #### data
-  mandatory  field. an array of objects. Each object should have, basic info , id ,name and  'children'  
+  #### productList
+  List of products 
+
+#### categoryList
+  List of category mapped with product 
+
+#### onSelection
+  callback function to get selected filter info back to parent compoonent
+
+
+
 
   ##### sample data
 
