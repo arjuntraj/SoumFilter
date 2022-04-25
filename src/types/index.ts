@@ -27,8 +27,10 @@ export type TreeNode = BasicInfo & ProductCategoryItem &{
  
 };
 export type FilterProps = {
-  data: TreeNode[];
-  nodeView:React.ElementType<NodeComponentProps>
+  categoryList: ProductCategoryItem[];
+  productList:Product[]
+  nodeView:React.ElementType<NodeComponentProps>,
+  onSelection:Function
 };
 
 export type ProductCategoryItem = BasicInfo & {
@@ -40,6 +42,8 @@ export type ProductCategoryItem = BasicInfo & {
   type?: string;
   avilableChildCountText?: string;
   category?: number; 
+  model?:number;
+  brand?:number;
 };
 export type ProductBrand = BasicInfo & {
   type?: string;

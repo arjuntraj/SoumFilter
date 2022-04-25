@@ -189,6 +189,7 @@ export const getFIlterDataFromProductMetadata = (
               varientsForCurrentBrand.length + ' Device';
             varient.type = 'varient';
             varient.stock = totalDevice;
+            varient.model = model.id;
             varient.avilabilityMessage = totalDevice + ' Devices';
             // (varient.brand = brand.id), (varient.category = currentCategory.id);
           });

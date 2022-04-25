@@ -70,8 +70,10 @@ Externalize more props like, icons, child object key and  node view componenyt w
 1. Call back to get selected devcies 
 
 ### Screen shots / Demo
-![Demo](filter.png)  
- 
+
+![Demo](img2.png)  
+![Demo](img4.png)  
+
 
 
  

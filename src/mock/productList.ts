@@ -139,6 +139,45 @@ export const productList: Product[] = [
     category: productCategory[3],
     stock:6000
   },
+  {
+    id: 14,
+    name: 'ThinkBook',
+    brand: productBrand[4],
+    varient: productVarient[0],
+    model: productModel[7],
+    image: require('../assets/img/product/thinkbook.png'),
+    category: productCategory[3],
+    stock:90
+  },
    
-  
+  {
+    id: 14,
+    name: 'MacBook',
+    brand: productBrand[0],
+    varient: productVarient[2],
+    model: productModel[11],
+    image: require('../assets/img/product/m1pro.png'),
+    category: productCategory[3],
+    stock:1000
+  },
+  {
+    id: 15,
+    name: 'iPad Pro',
+    brand: productBrand[0],
+    varient: productVarient[0],
+    model: productModel[10],
+    image: require('../assets/img/product/ipadpro.png'),
+    category: productCategory[6],
+    stock:1820
+  },
+  {
+    id: 16,
+    name: 'iPad Pro',
+    brand: productBrand[2],
+    varient: productVarient[0],
+    model: productModel[10],
+    image: require('../assets/img/product/ipadpro.png'),
+    category: productCategory[6],
+    stock:1820
+  },
 ];
