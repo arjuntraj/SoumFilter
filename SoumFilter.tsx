@@ -6,7 +6,10 @@ import ProductFilter from './src/component/ProductFilter';
 
 import {productCategory, productList} from './src/mock';
 import {NodeComponentProps, TreeNode} from './src/types';
-import {getFIlterDataFromProductMetadata} from './src/util';
+import {
+  formatFilterSelection,
+  getFIlterDataFromProductMetadata,
+} from './src/util';
 
 /**
  *
@@ -81,89 +84,14 @@ const App = () => {
   let [productCategoryData, setProductCategory] =
     useState<any[]>(copyOfCategoryList);
 
+  const onSelection = (selectedNode: TreeNode[]) => {
+    setSelectedFilters(formatFilterSelection(selectedNode));
+  };
+
   useEffect(() => {
     //TODO
   }, [selectedFilters]);
 
-  const formatFilterSelection = (list: TreeNode[]) => {
-    //TODO: Cleanup implemetation
-    const selectedFilterOptions = [];
-    const selectedList = Object.keys(list).map(function (key) {
-      return list[key];
-    });
-
-    // grouping by type
-    let filterByType = selectedList.reduce(
-      (filterList, item) => ({
-        ...filterList,
-        [item.type]: [...(filterList[item.type] || []), item],
-      }),
-      {},
-    );
-    const {category = [], brand = [], model = [], varient = []} = filterByType;
-
-    // get selected category list
-    const selectedcategory = category.map((o: TreeNode) => 'All ' + o.name);
-
-    selectedcategory.length && selectedFilterOptions.push(selectedcategory);
-
-    // get selected brand list
-
-    const selectedBrands = brand
-      .filter((b: TreeNode) => {
-        const selectedCategory = category.find(
-          (c: TreeNode) => c.id === b.category,
-        );
-        return !selectedCategory && b.selected;
-      })
-      .map((o: TreeNode) => 'All ' + o.name + ' ' + o?.parentNode?.name);
-
-    selectedBrands.length && selectedFilterOptions.push(selectedBrands);
-
-    // get selected model list
-
-    const selectedModels = model
-      .filter((m: TreeNode) => {
-        const selectedBrand = brand.find((b: TreeNode) => b.id === m.brand);
-        return !selectedBrand && m.selected;
-      })
-      .map((o: TreeNode) => 'All ' + o.name + ' devices');
-
-    selectedModels.length && selectedFilterOptions.push(selectedModels);
-
-    // get selected varient list
-    //Group by model
-
-    const selectedVarients = varient.filter((v: TreeNode) => {
-      const selectedModel = model.find((m: TreeNode) => m.id === v.model);
-      return !selectedModel && v.selected;
-    });
-
-    // grouping by model
-    let groupByModel = selectedVarients.reduce(
-      (filterList: any, item: any) => ({
-        ...filterList,
-        [item.parentNode.name]: [
-          ...(filterList[item.parentNode.name] || []),
-          item,
-        ],
-      }),
-      {},
-    );
-
-    const selectedVarientsByModel = Object.keys(groupByModel).map(key => {
-      const value = groupByModel[key];
-      const selectedVarientsForModel = value
-        .map((v: TreeNode) => v.name)
-        .join(', ');
-      return key + ' ' + selectedVarientsForModel;
-    });
-
-    selectedVarientsByModel.length &&
-      selectedFilterOptions.push(selectedVarientsByModel);
-
-    setSelectedFilters(selectedFilterOptions);
-  };
   return (
     <SafeAreaView
       style={{
@@ -179,7 +107,7 @@ const App = () => {
           categoryList={productCategoryData}
           nodeView={NodeComponent}
           onSelection={(selectedNode: TreeNode[]) => {
-            formatFilterSelection(selectedNode);
+            onSelection(selectedNode);
           }}
         />
       </View>
